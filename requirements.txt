@@ -1,0 +1,16 @@
+tensorflow-gpu==1.6.0
+h5py>=2.7.0
+numpy>=1.13.1
+pandas>=0.19.2
+matplotlib>=2.1.1
+sklearn>=0.0
+scipy>=0.19.1
+jupyter
+plotly
+keras
+pillow
+horovod
+scikit-image
+tqdm
+opencv-python
+click

@@ -99,3 +99,13 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Idea
+.idea
+
+# Competition's data
+input/
+experiments/
+
+# MacOS
+.DS_Store
