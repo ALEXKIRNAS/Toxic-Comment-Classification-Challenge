@@ -1,7 +1,7 @@
 import re
 import numpy as np
 
-from constants import  MAX_FEATURES, EMBBEDINGS_SIZE
+from utils.constants import  MAX_FEATURES, EMBBEDINGS_SIZE
 
 
 def clean_text(text):
@@ -19,11 +19,11 @@ def clean_text(text):
 
 
     text = re.sub(r'(.)\1{2,}', r'\1', text)
-    text = re.sub("fuck", ' fuck ', text)
-    text = re.sub("idiot", ' idiot ', text)
-    text = re.sub("stupid", ' stupid ', text)
-    text = re.sub("dick", ' dick ', text)
-    text = re.sub("shit", ' shit ', text)
+    text = re.sub(r"fuck", ' fuck ', text)
+    text = re.sub(r"idiot", ' idiot ', text)
+    text = re.sub(r"stupid", ' stupid ', text)
+    text = re.sub(r"dick", ' dick ', text)
+    text = re.sub(r"shit", ' shit ', text)
 
     text = re.sub(r"US", "United States", text)
     text = re.sub(r"IT", "Information Technology", text)
@@ -37,10 +37,10 @@ def clean_text(text):
     text = re.sub(r"(\w+)\'s", "\g<1> is", text)
     text = re.sub(r"(\w+)\'re", "\g<1> are", text)
     text = re.sub(r"(\w+)\'d", "\g<1> would", text)
-    text = re.sub('\W', ' ', text)
-    text = re.sub('\s+', ' ', text)
-    text = re.sub(b'\s+$', b'', text)
-    text = re.sub('[\n\t\b\r]', '', text)
+    text = re.sub(r'\W', ' ', text)
+    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'\s+$', r'', text)
+    text = re.sub(r'[\n\t\b\r]', '', text)
     text = text.strip(' ')
 
     return text
@@ -67,6 +67,7 @@ def get_embedingsget_embeddings(tokenizer, embedings_path):
     for word, i in word_index.items():
         if i >= MAX_FEATURES: continue
         embedding_vector = embeddings_index.get(word)
-        if embedding_vector:
+        if embedding_vector is not None:
             embedding_matrix[i] = embedding_vector
 
+    return embedding_matrix

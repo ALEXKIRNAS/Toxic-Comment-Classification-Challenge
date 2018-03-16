@@ -1,10 +1,11 @@
 import numpy as np
 from sklearn.model_selection import KFold
+from utils.constants import RANDOM_SEED
 
 
 def prepare_data_cv(x_train, targets_train, x_test):
     kfold_data = []
-    kf = KFold(n_splits=5, shuffle=True, random_state=0xCAFFE)
+    kf = KFold(n_splits=5, shuffle=True, random_state=RANDOM_SEED)
 
     targets_train = np.array(targets_train)
     x_train = np.array(x_train)

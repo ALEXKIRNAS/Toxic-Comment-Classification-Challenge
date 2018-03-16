@@ -13,13 +13,13 @@ from utils.validation import prepare_data_cv
 
 
 @click.command()
-@click.option('--train_df_path', default='./inputs/train.csv')
-@click.option('--test_df_path', default='./inputs/test.csv')
-@click.option('--embedings_file', default='./inputs/crawl-300d-2M.vec')
+@click.option('--train_df_path', default='./input/train.csv')
+@click.option('--test_df_path', default='./input/test.csv')
+@click.option('--embedings_file', default='./input/crawl-300d-2M.vec')
 @click.option('--model_name', default='gru')
-@click.option('--STAMP', default='gru_default_text_fast_text_emb')
-def main(train_df_path, test_df_path, embedings_file, model_name, STAMP):
-  experiment_path = './experiments/%s' % STAMP
+@click.option('--stamp', default='gru_default_text_fast_text_emb')
+def main(train_df_path, test_df_path, embedings_file, model_name, stamp):
+  experiment_path = './experiments/%s' % stamp
 
   x_train, targets_train, x_test, train_submission, submission, embedings = load_data(train_df_path, test_df_path,
                                                                                       embedings_file)
@@ -71,11 +71,11 @@ def main(train_df_path, test_df_path, embedings_file, model_name, STAMP):
 
   for i, cls_name in enumerate(CLASS_NAMES):
     train_submission[cls_name] = train_probas[:, i]
-  train_submission.to_csv('./csv/train_%s.csv' % STAMP, index=False)
+  train_submission.to_csv('./csv/train_%s.csv' % stamp, index=False)
 
   for i, cls_name in enumerate(CLASS_NAMES):
     submission[cls_name] = test_probas[:, i]
-  submission.to_csv('./csv/submission_%s.csv' % STAMP, index=False)
+  submission.to_csv('./csv/submission_%s.csv' % stamp, index=False)
 
 
 if __name__ == '__main__':
