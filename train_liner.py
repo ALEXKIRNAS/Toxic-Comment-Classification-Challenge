@@ -46,14 +46,18 @@ def training(train_indices, val_indices, class_name, params):
 @click.command()
 @click.option('--train_df_path', default='./input/train.csv')
 @click.option('--test_df_path', default='./input/test.csv')
-@click.option('--stamp', default='gru_default_text_fast_text_emb')
-def main(train_df_path, test_df_path, stamp):
+@click.option('--stamp', default='lr')
+@click.option('--preprocess', default=False)
+def main(train_df_path, test_df_path, stamp, preprocess):
     global train_word_features, test_word_features, train, test
 
     train = pd.read_csv(train_df_path).fillna(' ')
     test = pd.read_csv(test_df_path).fillna(' ')
 
-    train_word_features, test_word_features = tf_idf_vectors(train, test)
+    print('Create features')    
+    train_word_features, test_word_features = tf_idf_vectors(train, test, preprocess)
+    
+    print('Start training')    
     submission = pd.DataFrame.from_dict({'id': test['id']})
     train_submission = pd.DataFrame.from_dict({'id': train['id']})
 
@@ -97,5 +101,5 @@ def main(train_df_path, test_df_path, stamp):
     print('Total: %s' % np.mean(scores))
 
 
-if __name__ == '__main_':
+if __name__ == '__main__':
     main()

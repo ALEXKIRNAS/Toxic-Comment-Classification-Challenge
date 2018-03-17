@@ -42,32 +42,52 @@ def tokenize(s):
     return re_tok.sub(r' \1 ', clean_text(s)).split()
 
 
-def tf_idf_vectors(train_df, test_df):
+def tf_idf_vectors(train_df, test_df, preprocess):
     train_text = train_df['comment_text']
     test_text = test_df['comment_text']
     all_text = pd.concat([train_text, test_text])
 
-    if not os.path.exists('./data.pkl'):
-        word_vectorizer = TfidfVectorizer(analyzer='word',
-                                          ngram_range=(1, 2),
-                                          tokenizer=tokenize,
-                                          max_df=0.9,
-                                          min_df=3,
-                                          strip_accents='unicode',
-                                          use_idf=True,
-                                          smooth_idf=True,
-                                          sublinear_tf=True,
-                                          max_features=300000)
+    if not os.path.exists('./train_tfidf_features.pkl') or not os.path.exists('./test_tfidf_features.pkl'):
+        if preprocess:
+            word_vectorizer = TfidfVectorizer(analyzer='word',
+                                              ngram_range=(1, 2),
+                                              tokenizer=tokenize,
+                                              max_df=0.9,
+                                              min_df=3,
+                                              strip_accents='unicode',
+                                              use_idf=True,
+                                              smooth_idf=True,
+                                              sublinear_tf=True,
+                                              max_features=300000)
 
-        char_vectorizer = TfidfVectorizer(sublinear_tf=True,
-                                          smooth_idf=True,
-                                          tokenizer=tokenize,
-                                          strip_accents='unicode',
-                                          analyzer='char',
-                                          max_df=0.9,
-                                          min_df=3,
-                                          ngram_range=(1, 4),
-                                          max_features=300000)
+            char_vectorizer = TfidfVectorizer(sublinear_tf=True,
+                                              smooth_idf=True,
+                                              tokenizer=tokenize,
+                                              strip_accents='unicode',
+                                              analyzer='char',
+                                              max_df=0.9,
+                                              min_df=3,
+                                              ngram_range=(1, 4),
+                                              max_features=300000)
+        else:
+            word_vectorizer = TfidfVectorizer(analyzer='word',
+                                              ngram_range=(1, 2),
+                                              max_df=0.9,
+                                              min_df=3,
+                                              strip_accents='unicode',
+                                              use_idf=True,
+                                              smooth_idf=True,
+                                              sublinear_tf=True,
+                                              max_features=300000)
+
+            char_vectorizer = TfidfVectorizer(sublinear_tf=True,
+                                              smooth_idf=True,
+                                              strip_accents='unicode',
+                                              analyzer='char',
+                                              max_df=0.9,
+                                              min_df=3,
+                                              ngram_range=(1, 4),
+                                              max_features=300000)
 
         word_vectorizer.fit(all_text)
         train_word_features = word_vectorizer.transform(train_text)
@@ -80,10 +100,14 @@ def tf_idf_vectors(train_df, test_df):
         train_word_features = sparse.hstack([train_char_features, train_word_features])
         test_word_features = sparse.hstack([test_char_features, test_word_features])
 
-        with open('./data.pkl', 'wb') as f:
-            pickle.dump([train_word_features, test_word_features], f)
+        with open('./train_tfidf_features.pkl', 'wb') as f:
+            pickle.dump(train_word_features, f)
+        with open('./test_tfidf_features.pkl', 'wb') as f:
+            pickle.dump(test_word_features, f)
     else:
-        with open('data.pkl', 'rb') as f:
-            train_word_features, test_word_features = pickle.load(f)
+        with open('train_tfidf_features.pkl', 'rb') as f:
+            train_word_features = pickle.load(f)
+        with open('test_tfidf_features.pkl', 'rb') as f:
+            test_word_features = pickle.load(f)
 
     return train_word_features, test_word_features
